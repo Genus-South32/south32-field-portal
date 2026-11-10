@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>South 32 - Nullaga Field Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-dark: #112b4e;
+      --primary-mid: #8895a6;
+      --primary-accent: #ec7723;
+
+      --dark-80: rgba(17, 43, 78, 0.8);
+      --dark-60: rgba(17, 43, 78, 0.6);
+      --dark-40: rgba(17, 43, 78, 0.4);
+      --dark-20: rgba(17, 43, 78, 0.2);
+      --dark-10: rgba(17, 43, 78, 0.1);
+      --dark-05: rgba(17, 43, 78, 0.05);
+
+      --accent-80: rgba(236, 119, 35, 0.8);
+      --accent-60: rgba(236, 119, 35, 0.6);
+      --accent-40: rgba(236, 119, 35, 0.4);
+      --accent-20: rgba(236, 119, 35, 0.2);
+      --accent-10: rgba(236, 119, 35, 0.1);
+      --accent-05: rgba(236, 119, 35, 0.05);
+    }
+
+    body {
+      font-family: 'Exo', sans-serif;
+      background-color: #f9f9f9;
+      color: var(--primary-dark);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color: var(--primary-dark);
+      height: 350px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      padding: 0 2rem;
+    }
+
+    .header-logo {
+      height: 300px;
+      width: auto;
+      object-fit: contain;
+      max-width: 600px;
+    }
+
+    .header-title {
+      flex: 1;
+      text-align: center;
+    }
+
+    .header-title h1 {
+      font-weight: 600;
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    .header-spacer {
+      width: 300px; /* Same as logo width to center the title */
+    }
+
+    /* Responsive media queries for header logo */
+    @media screen and (max-width: 1200px) {
+      .header-logo {
+        height: 250px;
+        max-width: 500px;
+      }
+      .header-spacer {
+        width: 250px;
+      }
+      .header-title h1 {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      header {
+        height: 250px;
+        padding: 0 1rem;
+      }
+      .header-logo {
+        height: 200px;
+        max-width: 350px;
+      }
+      .header-spacer {
+        width: 200px;
+      }
+      .header-title h1 {
+        font-size: 2rem;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      header {
+        height: 200px;
+        padding: 0 0.5rem;
+      }
+      .header-logo {
+        height: 160px;
+        max-width: 200px;
+      }
+      .header-spacer {
+        width: 160px;
+      }
+      .header-title h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media screen and (max-width: 320px) {
+      header {
+        height: 180px;
+      }
+      .header-logo {
+        height: 130px;
+        max-width: 150px;
+      }
+      .header-spacer {
+        width: 130px;
+      }
+      .header-title h1 {
+        font-size: 1.3rem;
+      }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: -50px auto 0 auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px var(--dark-10);
+    }
+
+    .form-switcher {
+      margin-bottom: 2rem;
+    }
+
+    .form-switcher h2 {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .form-switcher button {
+      background-color: var(--accent-60);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      margin: 0.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .form-switcher button:hover {
+      background-color: var(--primary-accent);
+    }
+
+    .form-switcher button.active {
+      background-color: var(--primary-accent);
+    }
+
+    .btn-back {
+      background-color: #6c757d !important;
+    } 
+      
+    .btn-back:hover {
+      background-color: #5a6268 !important;
+    }   
+    
+    .search-btn {
+      background-color: var(--primary-accent);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    } 
+      
+    .thank-you-message {
+      background-color: var(--accent-10);
+      border: 2px solid var(--primary-accent);
+      color: var(--primary-dark);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      display: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .form-section h3 {
+      font-size: 1.5rem;
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      font-weight: 600;
+    }
+
+    legend {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--dark-20);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-family: 'Exo', sans-serif;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+
+    .form-footer {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .form-footer button {
+      background-color: var(--primary-accent);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+.field-error input {
+  border: 2px solid #dc3545;
+  background-color: #fff5f5;
+}
+
+.field-error label {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.form-wrapper {
+  border: 1px solid var(--dark-20); /* Subtle border */
+  padding: 1.5rem;
+  border-radius: 1rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto; /* Ensure horizontal scrolling if content overflows */
+}
+
+input,
+select,
+textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Specific styling for discipline checkboxes and their error messages */
+.discipline-checkbox-group.field-error {
+  border: 2px solid #dc3545;
+  padding: 10px;
+  border-radius: 0.5rem;
+  background-color: #fff5f5;
+}
+
+.discipline-checkbox-group.field-error label {
+  color: #dc3545;
+}
+
+    .week-ending-display {
+      background-color: var(--accent-10);
+      border: 2px solid var(--primary-accent);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Style for the conditional discipline fields */
+    .discipline-conditional-fields {
+        border-left: 3px solid var(--primary-accent);
+        padding-left: 15px;
+        margin-top: 10px;
+        margin-bottom: 15px;
+        background-color: var(--accent-05);
+        border-radius: 0.5rem;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+/* Styles for the main discipline checkboxes' labels */
+.discipline-checkbox-group > div label {
+    font-weight: bold; /* Make these labels bold */
+    color: var(--primary-dark); /* Use a darker color */
+    display: inline; /* Keep them inline with their checkboxes */
+    margin-top: 5px;margin-left: 5px; /* Add some space if the input is first */
+    /* Add any other styles specific to these main labels */
+}
+
+/* Styles for labels within the conditional discipline fields */
+.discipline-conditional-fields label {
+    font-size: 0.95rem; /* Slightly smaller font for these */
+    color: var(--primary-mid); /* Use a lighter color */
+    display: inline; /* Keep them inline with their checkboxes */
+    margin-bottom: 0.5rem; /* Add space below them */    }
+
+    .discipline-conditional-fields input[type="number"] {
+        width: calc(100% - 20px); /* Adjust width to fit padding */
+        margin-bottom: 10px;
+    }
+/* More specifically, styles for the day checkboxes' labels */
+.discipline-conditional-fields .days-checkbox-group label {
+    font-weight: normal; /* Ensure they are not bold */
+    color: var(--primary-dark); /* Can revert to primary-dark for contrast */
+    display: inline; /* Keep them inline with their checkboxes */
+    margin-left: 5px; /* Space next to the checkbox */
+    margin-bottom: 0; /* Remove block margin */
+}
+    .discipline-conditional-fields .days-checkbox-group div {
+        flex: 1 1 auto; /* Allow items to grow and shrink */
+        min-width: 100px; /* Minimum width for each day checkbox */
+    }
+    .discipline-conditional-fields .days-checkbox-group input[type="checkbox"] {
+        margin-right: 5px;
+    }
+    .error-field {
+        border: 2px solid red !important;
+        background-color: #ffe0e0 !important;
+    }
+    /* Optional: Style for the error messages */
+    .error-message {
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+
+.pitlinkin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  width: 100%;
+}
+
+.left-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.right-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.right-group label {
+  white-space: nowrap; /* prevents label from wrapping */
+ }
+
+#pitlinkin-PitA-Note-ID {
+  width: 100%;
+}
+
+.or-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 2rem 0;
+  font-family: 'Exo', sans-serif;
+}
+
+.or-divider .line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: var(--accent-60);
+  border: none;
+}
+
+.or-divider .or-text {
+  padding: 0 1rem;
+  font-weight: 600;
+  color: var(--primary-accent);
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+  .disabled-label {
+    color: gray;
+    font-style: italic;
+  }
+
+.field-error-names {
+  border: 2px solid red;
+}
+
+.crew-checkbox {
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      background-color: #fff;
+      padding: 1rem;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'Exo', sans-serif;
+    }
+    .crew-checkbox label {
+      display: block;
+      margin-bottom: 0.25rem;
+      cursor: pointer;
+      color: var(--primary-dark);
+    }
+    .crew-checkbox input[type="checkbox"] {
+      accent-color: var(--primary-accent);
+      margin-right: 0.5rem;
+      transform: scale(1.1);
+    }
+    .crew-checkbox p {
+      color: var(--primary-mid);
+      font-style: italic;
+      margin: 0 0 0.5rem 0;
+    }
+
+fieldset.time-group {
+  border: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+fieldset.time-group legend {
+  font-weight: bold;
+  padding: 0;
+  font-size: 1rem;
+}
+
+#progress-location-container {
+  margin-bottom: 1rem;
+}
+
+#progress-marker-range {
+  margin-bottom: 1rem;
+}
+
+#progress-marker-range > p {
+  margin: 0 0 0.75rem;
+}
+
+.progress-marker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.progress-marker-grid > div {
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .progress-marker-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style>
+
+</head>
+<body>
+  <header>
+    <!-- <img src="Field Register Header.png" alt="Field Register Logo" class="header-logo" /> -->
+    <div class="header-title">
+      <h1>South 32 - Nullaga Field Register</h1>
+    </div>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main class="container">
+  <div class="form-wrapper">
+  <div id="thank-you-message" class="thank-you-message" style="display: none;">
+    <h3 id="message-title">Thank you!</h3>
+    <p id="message-body">Your form has been submitted successfully.</p>
+  </div>
+    
+    <section class="form-switcher">
+      <h2>Please select which form you require:</h2>
+      <button id="btn-bog" onclick="showForm('bog')">Boots on Ground</button>
+      <button id="btn-progress" onclick="showForm('progress')">Progress Register</button>
+
+    </section>
+
+    <div id="form-bog" class="form-section hidden">
+      <h3>Daily Pre-Start: Boots on Ground: Genus - South 32 Nullaga project</h3>
+      <p>Please complete prior to starting work. <strong><u>Submission must be no later than 8am.</u></strong><br>This does not replace the JHA.</p>
+      <form id="bog-form">
+
+        <label for="bog-project">Project</label>
+            <select id="bog-project" name="bog-project" required>
+          <option value="South 32 Nullaga" selected>South 32 Nullaga</option>
+        </select>
+
+        <label for="bog-date">Date</label>
+        <input type="date" id="bog-date" name="bog-date" required />
+
+        <label for="bog-company-name">Your Company Name</label>
+        <select id="bog-company-name" name="bog-company-name" required>
+          <option value="">Select one</option>
+          <option value="Genus Services">Genus Services</option>
+          <option value="DMC Civil">DMC Civil</option>
+          <option value="Pulse Infrastructure">Pulse Infrastructure</option>
+        </select>
+
+<!-- NEW: Estimated Start Time (Hour / Minutes / AM-PM) -->
+<fieldset class="form-group time-group">
+  <legend>Estimated Start Time</legend>
+
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <!-- Hour -->
+    <div style="flex: 1; min-width: 100px;">
+      <label for="bog-start-hour">Hour</label>
+      <select id="bog-start-hour" name="bog-start-hour" required>
+        <option value="">Hour</option>
+        <option value="1">01</option>
+        <option value="2">02</option>
+        <option value="3">03</option>
+        <option value="4">04</option>
+        <option value="5">05</option>
+        <option value="6">06</option>
+        <option value="7">07</option>
+        <option value="8">08</option>
+        <option value="9">09</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+    </div>
+
+    <!-- Minutes -->
+    <div style="flex: 1; min-width: 100px;">
+      <label for="bog-start-minutes">Minutes</label>
+      <select id="bog-start-minutes" name="bog-start-minutes" required>
+        <option value="">Minutes</option>
+        <option value="00">00</option>
+        <option value="30">30</option>
+      </select>
+    </div>
+
+    <!-- AM/PM -->
+    <div style="flex: 1; min-width: 100px;">
+      <label for="bog-start-ampm">AM/PM</label>
+      <select id="bog-start-ampm" name="bog-start-ampm" required>
+        <option value="">AM/PM</option>
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+    </div>
+  </div>
+</fieldset>
+
+<!-- NEW: Estimated Hours to be Worked Today -->
+<div class="form-group">
+  <label for="bog-estimated-hours">Estimated hours to be worked today</label>
+  <select id="bog-estimated-hours" name="bog-estimated-hours" required>
+    <option value="">Select hours</option>
+    <option value="4">4</option>
+    <option value="6">6</option>
+    <option value="8">8</option>
+    <option value="10">10</option>
+    <option value="12">12</option>
+  </select>
+</div>
+        
+        <label for="bog-discipline">Discipline</label>
+        <select id="bog-discipline" name="bog-discipline" required>
+          <option value="">Select one</option>
+          <optgroup label="Construction">
+            <option value="Rod, Rope & Prove">Rod, Rope & Prove</option>
+            <option value="Horizontal Directional Drilling">Horizontal Directional Drilling</option>
+            <option value="Trenching - Excavator">Trenching - Excavator</option>
+            <option value="Trenching - Tesmec">Trenching - Tesmec</option>
+            <option value="ACM Removal">ACM Removal</option>
+            <option value="Pit Installation">Pit Installation</option>
+            <option value="Reinstatement">Reinstatement</option>
+            <option value="Fibre Hauling">Fibre Hauling</option>
+            <option value="Fibre Splicing">Fibre Splicing</option>
+            <option value="Testing & Commissioning">Testing & Commissioning</option>
+          </optgroup>
+        </select>
+
+<div id="bog-location-container">
+  <div id="bog-location-grid" style="display: block;">
+    <label for="bog-route-section">Route Section ID</label>
+    <input
+      type="text"
+      id="bog-route-section"
+      name="Route Section"
+      placeholder="Enter Route Section ID"
+      required
+    >
+  </div>
+</div>
+
+    <label for="bog-site-contact">Onsite Crew Lead Name</label>
+    <div id="bog-site-contact" class="crew-checkbox"></div>
+    <input type="hidden" id="bog-site-contact-hidden" name="bog-site-contact">
+        
+    <label for="bog-crews-names">Select Crew Members</label>
+    <div id="bog-crews-names" class="crew-checkbox">
+      <p>Select crew members for this location...</p>
+    </div>
+    <input type="hidden" id="bog-crews-names-hidden" name="bog-crews-names" required />
+
+    <label for="bog-Number-of-People-at-Location">Number of People in Crew at Location</label>
+    <input
+      type="number"
+      id="bog-Number-of-People-at-Location"
+      name="bog-Number-of-People-at-Location"
+      min="0"
+      step="1"
+      value="0"
+      readonly
+    >
+       
+        <label for="bog-Genus-FCM">Your Genus FCM</label>
+        <select id="bog-Genus-FCM" name="bog-Genus-FCM" required>
+          <option value="">Select one</option>
+          <option value="Alex McConville">Alex McConville</option>
+          <option value="Peter Hughes">Peter Hughes</option>
+        </select>
+<br><br>
+<div>
+  <fieldset id="bog-swms-fieldset">
+    <legend><strong>Discipline with task Specific SWMS</strong></legend>
+    <p>
+      (SWMS-SHEQ-CMS-0011 Site Establishment, SWMS-SHEQ-CMS-0001 Access to Pits & Manholes - required on all sites, SWMS-SHEQ-CMS-0006 Asbestos (ACM) required for all ACM sites)
+    </p>
+    <p>All workers to have signed into Task SWMS being utilised with copy available - latest version.</p>
+
+    <input type="checkbox" name="bog-SWMS[]" value="Scoping" /> Scoping (0017 Surveying &amp; Scoping)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Pit Installation" /> Pit Installation (0002 Installing Replacing Repairing Pits Manholes)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Trenching" /> Trenching (0012 Excavation &amp; Trenching)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Ploughing" /> Ploughing (0026 Ploughing &amp; Cable Laying)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Drilling" /> Drilling (0016 Directional Boring, 0012 Excavation &amp; Trenching)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Hauling" /> Hauling (0008 Rod Roping &amp; Cable Hauling)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Splicing" /> Splicing (0007 Cable Jointing)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Service Locator" /> Service Locator (0012 Excavation &amp; Trenching)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Reinstatement" /> Reinstatement (0012 Excavation &amp; Trenching)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Site Establishment" /> Site Establishment (0011 Site Establishment)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Access to Pits &amp; Manholes" /> Access to Pits &amp; Manholes (0001 Access to Pits &amp; Manholes)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Asbestos (ACM)" /> Asbestos (ACM) (0006 Asbestos ACM)<br />
+    <input type="checkbox" name="bog-SWMS[]" value="Plant &amp; Equipment Operation" /> Plant &amp; Equipment Operation (0014 Use of Plant and Equipment)<br />
+
+    <p id="swms-error" style="color: red; display: none;">Please select at least one SWMS discipline.</p>
+  </fieldset>
+</div>
+                
+<div id="bog-swms-section">
+
+  <div id="bog-jha-label">
+    <label for="bog-jha-uploaded">
+      I confirm all workers have been inducted and have signed onto the JHA.
+    </label>
+    <input type="checkbox" id="bog-jha-uploaded" name="bog-jha-uploaded" required>
+    Please induct all visitors to JHA and complete prior to starting at each site.
+  </div>
+
+<div style="margin: 20px 0;">
+  <label for="bog-jha-photos">
+    Please provide a photo of the signed JHA (GPS time/date enabled)
+    <br>
+    <small style="color: #666;">
+      Requires photo of front page and signed last page of the JHA
+    </small>
+  </label>
+
+  <input 
+    type="file" 
+    id="bog-jha-photos" 
+    name="bog_jha_photos[]"
+    accept="image/*"
+    multiple
+    capture="environment"
+    required
+    style="margin-top: 10px; width: 100%; padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif;"
+  >
+
+  <!-- Optional hint for users -->
+  <p style="font-size: 0.9em; color: #555; margin-top: 8px;">
+    You can select multiple photos or take new ones with your camera (enable GPS for time/date stamp).
+  </p>
+</div>
+
+<div id="bog-excavation">
+  <label for="bog-excavation-checkbox">Is excavation work being conducted today?</label>
+  <input type="checkbox" id="bog-excavation-checkbox" name="bog-excavation" /> Refer to HSE Guidance Note – Construction JHA and Excavation permit process
+</div>
+</div>
+
+        <label for="bog-comments">Additional Comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
+        <textarea id="bog-comments" name="bog-comments" placeholder="Track required actions in MyOsh with SHEQ support"></textarea>
+
+        <div class="form-footer">
+          <button type="button" class="btn-back" onclick="confirmReset('bog')">Back</button>
+          <button type="submit">Submit BOG</button>
+        </div>
+      </form>
+    </div>        
+
+<div id="form-progress" class="form-section hidden">
+  <h3>Progress Register: South 32 Nullaga project</h3>
+  <form id="progress-form">
+
+    <label for="progress-project">Project</label>
+    <select id="progress-project" name="progress-project" required>
+      <option value="South 32 Nullaga" selected>South 32 Nullaga</option>
+    </select>
+
+    <label for="progress-date">Date</label>
+    <input type="date" id="progress-date" name="progress-date" required />
+
+    <label for="progress-company-name">Your Company Name</label>
+    <select id="progress-company-name" name="progress-company-name" required>
+          <option value="">Select one</option>
+          <option value="Genus Services">Genus Services</option>
+          <option value="DMC Civil">DMC Civil</option>
+          <option value="Pulse Infrastructure">Pulse Infrastructure</option>
+        </select>
+
+    <label for="progress-site-contact">Onsite Crew Lead Name</label>
+    <div id="progress-site-contact" class="crew-checkbox"></div>
+    <input type="hidden" id="progress-site-contact-hidden" name="progress-site-contact" required />
+
+<div id="progress-location-container">
+  <div id="progress-location-grid" style="display: block;">
+    <label for="progress-route-section">Route Section ID</label>
+    <input
+      type="text"
+      id="progress-route-section"
+      name="Route Section"
+      placeholder="Enter Route Section ID"
+      required
+    >
+  </div>
+</div>
+
+<div id="progress-marker-range">
+  <p><strong>Below activities have been completed between Marker Posts</strong></p>
+  <div class="progress-marker-grid">
+    <div>
+      <label for="progress-start-marker">Start Marker</label>
+      <input type="text" id="progress-start-marker" name="Start Marker" placeholder="Enter start marker" required />
+    </div>
+    <div>
+      <label for="progress-end-marker">End Marker</label>
+      <input type="text" id="progress-end-marker" name="End Marker" placeholder="Enter end marker" required />
+    </div>
+  </div>
+</div>
+ 
+<fieldset id="progress-activities-fieldset">
+  <legend>Select the activity type(s) your company has completed today:</legend>
+  <div class="discipline-checkbox-group">
+
+        <div class="progress-activity-row">
+          <input type="checkbox" id="discipline-rrp-progress" name="discipline[]" value="rrp-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+          <label for="discipline-rrp-progress">Rod, Rope &amp; Prove</label>
+        </div>
+        <div id="discipline-rrp-progress-fields" class="discipline-conditional-fields" style="display: none;">
+          <label for="rrp-progress-qty">Metres Completed:</label>
+          <input type="number" id="rrp-progress-qty" name="rrp-progress-qty" min="0" step="0.1" />
+          <label for="rrp-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+          <input type="file" id="rrp-progress-photos" name="rrp-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+        </div>
+
+        <div class="progress-category-row">
+          <input type="checkbox" id="discipline-civil-works-progress" name="discipline[]" value="civil-works-progress" onchange="toggleDisciplineFields(this)" />
+          <label for="discipline-civil-works-progress">Civil Works</label>
+        </div>
+        <div id="discipline-civil-works-progress-fields" class="discipline-conditional-fields" style="display: none;">
+            <div class="progress-category-row">
+              <input type="checkbox" id="discipline-civil-hdd-progress" name="discipline[]" value="civil-hdd-progress" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-civil-hdd-progress">Horizontal Directional Drilling</label>
+            </div>
+            <div id="discipline-civil-hdd-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                <div class="progress-activity-row">
+                  <input type="checkbox" id="discipline-civil-hdd-otr-progress" name="discipline[]" value="civil-hdd-otr-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+                  <label for="discipline-civil-hdd-otr-progress">OTR</label>
+                </div>
+                <div id="discipline-civil-hdd-otr-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                  <label for="civil-hdd-otr-progress-qty">Quantity / Metres Completed:</label>
+                  <input type="number" id="civil-hdd-otr-progress-qty" name="civil-hdd-otr-progress-qty" min="0" step="0.1" />
+                  <label for="civil-hdd-otr-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+                  <input type="file" id="civil-hdd-otr-progress-photos" name="civil-hdd-otr-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+                </div>
+
+                <div class="progress-activity-row">
+                  <input type="checkbox" id="discipline-civil-hdd-rock-progress" name="discipline[]" value="civil-hdd-rock-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+                  <label for="discipline-civil-hdd-rock-progress">Rock</label>
+                </div>
+                <div id="discipline-civil-hdd-rock-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                  <label for="civil-hdd-rock-progress-qty">Quantity / Metres Completed:</label>
+                  <input type="number" id="civil-hdd-rock-progress-qty" name="civil-hdd-rock-progress-qty" min="0" step="0.1" />
+                  <label for="civil-hdd-rock-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+                  <input type="file" id="civil-hdd-rock-progress-photos" name="civil-hdd-rock-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+                </div>
+            </div>
+
+            <div class="progress-category-row">
+              <input type="checkbox" id="discipline-civil-trenching-excavator-progress" name="discipline[]" value="civil-trenching-excavator-progress" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-civil-trenching-excavator-progress">Trenching - Excavator</label>
+            </div>
+            <div id="discipline-civil-trenching-excavator-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                <div class="progress-activity-row">
+                  <input type="checkbox" id="discipline-civil-trenching-excavator-otr-progress" name="discipline[]" value="civil-trenching-excavator-otr-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+                  <label for="discipline-civil-trenching-excavator-otr-progress">Excavate 500mm wide trench 0-2m depth (Conventional) OTR</label>
+                </div>
+                <div id="discipline-civil-trenching-excavator-otr-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                  <label for="civil-trenching-excavator-otr-progress-qty">Quantity / Metres Completed:</label>
+                  <input type="number" id="civil-trenching-excavator-otr-progress-qty" name="civil-trenching-excavator-otr-progress-qty" min="0" step="0.1" />
+                  <label for="civil-trenching-excavator-otr-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+                  <input type="file" id="civil-trenching-excavator-otr-progress-photos" name="civil-trenching-excavator-otr-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+                </div>
+
+                <div class="progress-activity-row">
+                  <input type="checkbox" id="discipline-civil-trenching-excavator-rock-progress" name="discipline[]" value="civil-trenching-excavator-rock-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+                  <label for="discipline-civil-trenching-excavator-rock-progress">Excavate 500mm wide trench 0-2m depth (Conventional) – ROCK – Needs Approval from GENUS</label>
+                </div>
+                <div id="discipline-civil-trenching-excavator-rock-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                  <label for="civil-trenching-excavator-rock-progress-qty">Quantity / Metres Completed:</label>
+                  <input type="number" id="civil-trenching-excavator-rock-progress-qty" name="civil-trenching-excavator-rock-progress-qty" min="0" step="0.1" />
+                  <label for="civil-trenching-excavator-rock-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+                  <input type="file" id="civil-trenching-excavator-rock-progress-photos" name="civil-trenching-excavator-rock-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+                </div>
+
+                <div class="progress-activity-row">
+                  <input type="checkbox" id="discipline-civil-trenching-excavator-backfill-progress" name="discipline[]" value="civil-trenching-excavator-backfill-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+                  <label for="discipline-civil-trenching-excavator-backfill-progress">Conventional - Backfill and compaction using mixed spoil that requires local filtering and screening by the operator to achieve compliant material</label>
+                </div>
+                <div id="discipline-civil-trenching-excavator-backfill-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                  <label for="civil-trenching-excavator-backfill-progress-qty">Quantity / Metres Completed:</label>
+                  <input type="number" id="civil-trenching-excavator-backfill-progress-qty" name="civil-trenching-excavator-backfill-progress-qty" min="0" step="0.1" />
+                  <label for="civil-trenching-excavator-backfill-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+                  <input type="file" id="civil-trenching-excavator-backfill-progress-photos" name="civil-trenching-excavator-backfill-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+                </div>
+            </div>
+
+            <div class="progress-category-row">
+              <input type="checkbox" id="discipline-civil-trenching-tesmec-progress" name="discipline[]" value="civil-trenching-tesmec-progress" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-civil-trenching-tesmec-progress">Trenching - Tesmec</label>
+            </div>
+            <div id="discipline-civil-trenching-tesmec-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                <div class="progress-activity-row">
+                  <input type="checkbox" id="discipline-civil-trenching-tesmec-otr-progress" name="discipline[]" value="civil-trenching-tesmec-otr-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+                  <label for="discipline-civil-trenching-tesmec-otr-progress">Excavate 500mm wide trench 0-2m depth (Tesmec) - OTR</label>
+                </div>
+                <div id="discipline-civil-trenching-tesmec-otr-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                  <label for="civil-trenching-tesmec-otr-progress-qty">Quantity / Metres Completed:</label>
+                  <input type="number" id="civil-trenching-tesmec-otr-progress-qty" name="civil-trenching-tesmec-otr-progress-qty" min="0" step="0.1" />
+                  <label for="civil-trenching-tesmec-otr-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+                  <input type="file" id="civil-trenching-tesmec-otr-progress-photos" name="civil-trenching-tesmec-otr-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+                </div>
+
+                <div class="progress-activity-row">
+                  <input type="checkbox" id="discipline-civil-trenching-tesmec-rock-progress" name="discipline[]" value="civil-trenching-tesmec-rock-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+                  <label for="discipline-civil-trenching-tesmec-rock-progress">Excavate 500mm wide trench 0-2m depth (Tesmec) – ROCK – Needs Approval from GENUS</label>
+                </div>
+                <div id="discipline-civil-trenching-tesmec-rock-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                  <label for="civil-trenching-tesmec-rock-progress-qty">Quantity / Metres Completed:</label>
+                  <input type="number" id="civil-trenching-tesmec-rock-progress-qty" name="civil-trenching-tesmec-rock-progress-qty" min="0" step="0.1" />
+                  <label for="civil-trenching-tesmec-rock-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+                  <input type="file" id="civil-trenching-tesmec-rock-progress-photos" name="civil-trenching-tesmec-rock-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+                </div>
+
+                <div class="progress-activity-row">
+                  <input type="checkbox" id="discipline-civil-trenching-tesmec-backfill-progress" name="discipline[]" value="civil-trenching-tesmec-backfill-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+                  <label for="discipline-civil-trenching-tesmec-backfill-progress">Tesmec - Backfill and compaction using well-graded spoil (either imported by S32 or created via the use of the TRS1300 if ground conditions are favourable) without the need for local filtering or screening by the operator</label>
+                </div>
+                <div id="discipline-civil-trenching-tesmec-backfill-progress-fields" class="discipline-conditional-fields" style="display: none;">
+                  <label for="civil-trenching-tesmec-backfill-progress-qty">Quantity / Metres Completed:</label>
+                  <input type="number" id="civil-trenching-tesmec-backfill-progress-qty" name="civil-trenching-tesmec-backfill-progress-qty" min="0" step="0.1" />
+                  <label for="civil-trenching-tesmec-backfill-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+                  <input type="file" id="civil-trenching-tesmec-backfill-progress-photos" name="civil-trenching-tesmec-backfill-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-category-row">
+          <input type="checkbox" id="discipline-conduits-progress" name="discipline[]" value="conduits-progress" onchange="toggleDisciplineFields(this)" />
+          <label for="discipline-conduits-progress">Conduits</label>
+        </div>
+        <div id="discipline-conduits-progress-fields" class="discipline-conditional-fields" style="display: none;">
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-conduits-100mm-upvc-progress" name="discipline[]" value="conduits-100mm-upvc-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-conduits-100mm-upvc-progress">Supply &amp; install of 100mm uPVC conduit; inclusive of all fittings and other required installation materials, such as danger tape, etc.</label>
+            </div>
+            <div id="discipline-conduits-100mm-upvc-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="conduits-100mm-upvc-progress-qty">Quantity / Metres Completed:</label>
+              <input type="number" id="conduits-100mm-upvc-progress-qty" name="conduits-100mm-upvc-progress-qty" min="0" step="0.1" />
+              <label for="conduits-100mm-upvc-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="conduits-100mm-upvc-progress-photos" name="conduits-100mm-upvc-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+        </div>
+
+        <div class="progress-category-row">
+          <input type="checkbox" id="discipline-pit-installation-progress" name="discipline[]" value="pit-installation-progress" onchange="toggleDisciplineFields(this)" />
+          <label for="discipline-pit-installation-progress">Pit Installation</label>
+        </div>
+        <div id="discipline-pit-installation-progress-fields" class="discipline-conditional-fields" style="display: none;">
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-pit-installation-plastic-5-progress" name="discipline[]" value="pit-installation-plastic-5-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-pit-installation-plastic-5-progress">Plastic 5 cable pits with electrical lid (D-445-X-20120)</label>
+            </div>
+            <div id="discipline-pit-installation-plastic-5-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="pit-installation-plastic-5-progress-qty">Quantity Installed:</label>
+              <input type="number" id="pit-installation-plastic-5-progress-qty" name="pit-installation-plastic-5-progress-qty" min="0" step="1" />
+              <label for="pit-installation-plastic-5-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="pit-installation-plastic-5-progress-photos" name="pit-installation-plastic-5-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-pit-installation-concrete-universal-8-progress" name="discipline[]" value="pit-installation-concrete-universal-8-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-pit-installation-concrete-universal-8-progress">Supply &amp; install CONCRETE UNIVERSAL 8 CLASS B pit</label>
+            </div>
+            <div id="discipline-pit-installation-concrete-universal-8-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="pit-installation-concrete-universal-8-progress-qty">Quantity Installed:</label>
+              <input type="number" id="pit-installation-concrete-universal-8-progress-qty" name="pit-installation-concrete-universal-8-progress-qty" min="0" step="1" />
+              <label for="pit-installation-concrete-universal-8-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="pit-installation-concrete-universal-8-progress-photos" name="pit-installation-concrete-universal-8-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-pit-installation-type-8-progress" name="discipline[]" value="pit-installation-type-8-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-pit-installation-type-8-progress">Supply &amp; install Type 8 Class D underground pit (D-445-X-20117)</label>
+            </div>
+            <div id="discipline-pit-installation-type-8-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="pit-installation-type-8-progress-qty">Quantity Installed:</label>
+              <input type="number" id="pit-installation-type-8-progress-qty" name="pit-installation-type-8-progress-qty" min="0" step="1" />
+              <label for="pit-installation-type-8-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="pit-installation-type-8-progress-photos" name="pit-installation-type-8-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+        </div>
+
+        <div class="progress-category-row">
+          <input type="checkbox" id="discipline-marker-posts-progress" name="discipline[]" value="marker-posts-progress" onchange="toggleDisciplineFields(this)" />
+          <label for="discipline-marker-posts-progress">Marker Posts</label>
+        </div>
+        <div id="discipline-marker-posts-progress-fields" class="discipline-conditional-fields" style="display: none;">
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-marker-posts-mounted-cable-marker-progress" name="discipline[]" value="marker-posts-mounted-cable-marker-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-marker-posts-mounted-cable-marker-progress">Post mounted cable marker (D-445-X-20117)</label>
+            </div>
+            <div id="discipline-marker-posts-mounted-cable-marker-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="marker-posts-mounted-cable-marker-progress-qty">Quantity Installed:</label>
+              <input type="number" id="marker-posts-mounted-cable-marker-progress-qty" name="marker-posts-mounted-cable-marker-progress-qty" min="0" step="1" />
+              <label for="marker-posts-mounted-cable-marker-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="marker-posts-mounted-cable-marker-progress-photos" name="marker-posts-mounted-cable-marker-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+        </div>
+
+        <div class="progress-category-row">
+          <input type="checkbox" id="discipline-fibre-hauling-progress" name="discipline[]" value="fibre-hauling-progress" onchange="toggleDisciplineFields(this)" />
+          <label for="discipline-fibre-hauling-progress">Fibre Hauling</label>
+        </div>
+        <div id="discipline-fibre-hauling-progress-fields" class="discipline-conditional-fields" style="display: none;">
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-fibre-hauling-12core-foc-progress" name="discipline[]" value="fibre-hauling-12core-foc-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-fibre-hauling-12core-foc-progress">Supply &amp; install 12core FOC</label>
+            </div>
+            <div id="discipline-fibre-hauling-12core-foc-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="fibre-hauling-12core-foc-progress-qty">Quantity / Metres Completed:</label>
+              <input type="number" id="fibre-hauling-12core-foc-progress-qty" name="fibre-hauling-12core-foc-progress-qty" min="0" step="0.1" />
+              <label for="fibre-hauling-12core-foc-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="fibre-hauling-12core-foc-progress-photos" name="fibre-hauling-12core-foc-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-fibre-hauling-72core-new-conduits-progress" name="discipline[]" value="fibre-hauling-72core-new-conduits-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-fibre-hauling-72core-new-conduits-progress">Supply &amp; install 72core FOC in new conduits</label>
+            </div>
+            <div id="discipline-fibre-hauling-72core-new-conduits-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="fibre-hauling-72core-new-conduits-progress-qty">Quantity / Metres Completed:</label>
+              <input type="number" id="fibre-hauling-72core-new-conduits-progress-qty" name="fibre-hauling-72core-new-conduits-progress-qty" min="0" step="0.1" />
+              <label for="fibre-hauling-72core-new-conduits-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="fibre-hauling-72core-new-conduits-progress-photos" name="fibre-hauling-72core-new-conduits-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-fibre-hauling-72core-existing-conduits-progress" name="discipline[]" value="fibre-hauling-72core-existing-conduits-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-fibre-hauling-72core-existing-conduits-progress">Supply &amp; install 72core FOC in existing conduits</label>
+            </div>
+            <div id="discipline-fibre-hauling-72core-existing-conduits-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="fibre-hauling-72core-existing-conduits-progress-qty">Quantity / Metres Completed:</label>
+              <input type="number" id="fibre-hauling-72core-existing-conduits-progress-qty" name="fibre-hauling-72core-existing-conduits-progress-qty" min="0" step="0.1" />
+              <label for="fibre-hauling-72core-existing-conduits-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="fibre-hauling-72core-existing-conduits-progress-photos" name="fibre-hauling-72core-existing-conduits-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-fibre-hauling-existing-pits-material-progress" name="discipline[]" value="fibre-hauling-existing-pits-material-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-fibre-hauling-existing-pits-material-progress">Supply and install all required material through existing on-route concrete cable pits (D-445-X-20097)</label>
+            </div>
+            <div id="discipline-fibre-hauling-existing-pits-material-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="fibre-hauling-existing-pits-material-progress-qty">Quantity / Metres Completed:</label>
+              <input type="number" id="fibre-hauling-existing-pits-material-progress-qty" name="fibre-hauling-existing-pits-material-progress-qty" min="0" step="0.1" />
+              <label for="fibre-hauling-existing-pits-material-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="fibre-hauling-existing-pits-material-progress-photos" name="fibre-hauling-existing-pits-material-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+        </div>
+
+        <div class="progress-category-row">
+          <input type="checkbox" id="discipline-fibre-optics-progress" name="discipline[]" value="fibre-optics-progress" onchange="toggleDisciplineFields(this)" />
+          <label for="discipline-fibre-optics-progress">Fibre Optics</label>
+        </div>
+        <div id="discipline-fibre-optics-progress-fields" class="discipline-conditional-fields" style="display: none;">
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-fibre-optics-12core-joints-progress" name="discipline[]" value="fibre-optics-12core-joints-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-fibre-optics-12core-joints-progress">12Core cable joints (Allowance)</label>
+            </div>
+            <div id="discipline-fibre-optics-12core-joints-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="fibre-optics-12core-joints-progress-qty">Quantity Completed:</label>
+              <input type="number" id="fibre-optics-12core-joints-progress-qty" name="fibre-optics-12core-joints-progress-qty" min="0" step="1" />
+              <label for="fibre-optics-12core-joints-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="fibre-optics-12core-joints-progress-photos" name="fibre-optics-12core-joints-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-fibre-optics-12core-terminations-progress" name="discipline[]" value="fibre-optics-12core-terminations-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-fibre-optics-12core-terminations-progress">12Core cable terminations (Allowance)</label>
+            </div>
+            <div id="discipline-fibre-optics-12core-terminations-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="fibre-optics-12core-terminations-progress-qty">Quantity Completed:</label>
+              <input type="number" id="fibre-optics-12core-terminations-progress-qty" name="fibre-optics-12core-terminations-progress-qty" min="0" step="1" />
+              <label for="fibre-optics-12core-terminations-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="fibre-optics-12core-terminations-progress-photos" name="fibre-optics-12core-terminations-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-fibre-optics-72core-joints-progress" name="discipline[]" value="fibre-optics-72core-joints-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-fibre-optics-72core-joints-progress">72Core cable joints (Allowance)</label>
+            </div>
+            <div id="discipline-fibre-optics-72core-joints-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="fibre-optics-72core-joints-progress-qty">Quantity Completed:</label>
+              <input type="number" id="fibre-optics-72core-joints-progress-qty" name="fibre-optics-72core-joints-progress-qty" min="0" step="1" />
+              <label for="fibre-optics-72core-joints-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="fibre-optics-72core-joints-progress-photos" name="fibre-optics-72core-joints-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-fibre-optics-72core-terminations-progress" name="discipline[]" value="fibre-optics-72core-terminations-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-fibre-optics-72core-terminations-progress">72Core cable terminations (Allowance)</label>
+            </div>
+            <div id="discipline-fibre-optics-72core-terminations-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="fibre-optics-72core-terminations-progress-qty">Quantity Completed:</label>
+              <input type="number" id="fibre-optics-72core-terminations-progress-qty" name="fibre-optics-72core-terminations-progress-qty" min="0" step="1" />
+              <label for="fibre-optics-72core-terminations-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="fibre-optics-72core-terminations-progress-photos" name="fibre-optics-72core-terminations-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+        </div>
+
+        <div class="progress-category-row">
+          <input type="checkbox" id="discipline-testing-commissioning-progress" name="discipline[]" value="testing-commissioning-progress" onchange="toggleDisciplineFields(this)" />
+          <label for="discipline-testing-commissioning-progress">Testing &amp; Commissioning</label>
+        </div>
+        <div id="discipline-testing-commissioning-progress-fields" class="discipline-conditional-fields" style="display: none;">
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-testing-commissioning-otdr-progress" name="discipline[]" value="testing-commissioning-otdr-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-testing-commissioning-otdr-progress">OTDR Testing</label>
+            </div>
+            <div id="discipline-testing-commissioning-otdr-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="testing-commissioning-otdr-progress-qty">Quantity Completed:</label>
+              <input type="number" id="testing-commissioning-otdr-progress-qty" name="testing-commissioning-otdr-progress-qty" min="0" step="1" />
+              <label for="testing-commissioning-otdr-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="testing-commissioning-otdr-progress-photos" name="testing-commissioning-otdr-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+
+            <div class="progress-activity-row">
+              <input type="checkbox" id="discipline-testing-commissioning-insertion-loss-progress" name="discipline[]" value="testing-commissioning-insertion-loss-progress" class="progress-activity-checkbox" onchange="toggleDisciplineFields(this)" />
+              <label for="discipline-testing-commissioning-insertion-loss-progress">Insertion loss testing</label>
+            </div>
+            <div id="discipline-testing-commissioning-insertion-loss-progress-fields" class="discipline-conditional-fields" style="display: none;">
+              <label for="testing-commissioning-insertion-loss-progress-qty">Quantity Completed:</label>
+              <input type="number" id="testing-commissioning-insertion-loss-progress-qty" name="testing-commissioning-insertion-loss-progress-qty" min="0" step="1" />
+              <label for="testing-commissioning-insertion-loss-progress-photos" style="margin-top: 15px;">Add checklist or progress photo(s) here</label>
+              <input type="file" id="testing-commissioning-insertion-loss-progress-photos" name="testing-commissioning-insertion-loss-progress_photos[]" accept="image/*" multiple capture="environment" style="margin-top: 10px; width: calc(100% - 20px); padding: 8px; border: 1px solid var(--dark-20); border-radius: 0.5rem; font-size: 1rem; font-family: 'Exo', sans-serif; background-color: white;" />
+            </div>
+        </div>
+
+  </div>
+  <div id="progress-activities-error" class="error-message" style="display: none; color: #dc3545; margin-top: 0.75rem;">
+    Please select at least one completed activity or description.
+  </div>
+</fieldset>
+
+    <label for="progress-comments">Additional Comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
+    <textarea id="progress-comments" name="progress-comments" placeholder="Track required actions in MyOsh with SHEQ support"></textarea>
+
+    <div class="form-footer">
+      <button type="button" class="btn-back" onclick="confirmReset('progress')">Back</button>
+      <button type="submit">Submit Progress Register</button>
+    </div>
+  </form>
+</div>
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+// ============================================================
+// UTILITY FUNCTIONS
+// ============================================================
+
+function confirmReset(formType) {
+  if (confirm("Are you sure you want to reset this form and return to the form selection screen?")) {
+    location.reload();
+  }
+}
+
+function toggleDisciplineFields(checkbox) {
+  const discipline = checkbox.value.toLowerCase().replace(/\s/g, '-').replace(/--+/g, '-');
+  const fieldsDiv = document.getElementById(`discipline-${discipline}-fields`);
+  
+  if (fieldsDiv) {
+    if (checkbox.checked) {
+      fieldsDiv.style.display = 'block';
+      const crewsInput = document.getElementById(`${discipline}-crews`);
+      if (crewsInput && crewsInput.value === '') {
+        crewsInput.value = '1';
+      }
+    } else {
+      fieldsDiv.style.display = 'none';
+      const crewsInput = document.getElementById(`${discipline}-crews`);
+      if (crewsInput) crewsInput.value = '';
+      const qtyInput = document.getElementById(`${discipline}-qty`);
+      if (qtyInput) qtyInput.value = '';
+      const subCheckboxes = fieldsDiv.querySelectorAll('input[type="checkbox"]');
+      subCheckboxes.forEach(sub => {
+        if (sub.checked) {
+          sub.checked = false;
+          toggleDisciplineFields(sub);
+        }
+      });
+      const numberInputs = fieldsDiv.querySelectorAll('input[type="number"]');
+      numberInputs.forEach(input => input.value = '');
+      const daysCheckboxes = fieldsDiv.querySelectorAll(`input[name="${discipline}-days[]"]`);
+      daysCheckboxes.forEach(day => day.checked = false);
+      const daysError = document.getElementById(`${discipline}-days-error`);
+      if (daysError) daysError.style.display = 'none';
+    }
+  }
+
+  if (checkbox.classList.contains('progress-activity-checkbox') && checkbox.checked) {
+    document.querySelector('#progress-form .discipline-checkbox-group')?.classList.remove('field-error');
+    const activityError = document.getElementById('progress-activities-error');
+    if (activityError) activityError.style.display = 'none';
+  }
+}
+
+// ============================================================
+// DATE & TIME FUNCTIONS
+// ============================================================
+
+function setDefaultDate() {
+  const now = new Date();
+  const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+  const year = perthTime.getFullYear();
+  const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+  const day = String(perthTime.getDate()).padStart(2, '0');
+  const todayString = `${year}-${month}-${day}`;
+  
+  const bogDate = document.getElementById('bog-date');
+  if (bogDate) bogDate.value = todayString;
+
+  const progressDate = document.getElementById('progress-date');
+  if (progressDate) progressDate.value = todayString;
+}
+
+// ============================================================
+// VALIDATION FUNCTIONS
+// ============================================================
+
+function validateSWMS() {
+  const checked = document.querySelectorAll('input[name="bog-SWMS[]"]:checked');
+  const errorEl = document.getElementById('swms-error');
+  
+  if (checked.length === 0) {
+    if (errorEl) errorEl.style.display = 'block';
+    return false;
+  }
+  
+  if (errorEl) errorEl.style.display = 'none';
+  return true;
+}
+
+function validateBogForm() {
+  const form = document.querySelector('#bog-form');
+  const isValid = form.checkValidity();
+  
+  const swmsValid = validateSWMS();
+  
+  if (!isValid || !swmsValid) {
+    showErrorMessage();
+    form.reportValidity();
+    return false;
+  }
+  return true;
+}
+
+function validateProgressForm() {
+  const form = document.getElementById('progress-form');
+  if (!form) return false;
+
+  const activityGroup = form.querySelector('.discipline-checkbox-group');
+  const activityError = document.getElementById('progress-activities-error');
+  const hasSelectedActivity = Boolean(form.querySelector('.progress-activity-checkbox:checked'));
+  const crewLead = document.getElementById('progress-site-contact-hidden')?.value.trim();
+
+  activityGroup?.classList.toggle('field-error', !hasSelectedActivity);
+  if (activityError) activityError.style.display = hasSelectedActivity ? 'none' : 'block';
+
+  if (!form.checkValidity() || !hasSelectedActivity || !crewLead) {
+    showErrorMessage();
+    form.reportValidity();
+    if (!crewLead) {
+      alert('Please select an Onsite Crew Lead Name.');
+      document.getElementById('progress-site-contact')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    if (!hasSelectedActivity) activityGroup?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return false;
+  }
+  return true;
+}
+
+// ============================================================
+// UI MESSAGE FUNCTIONS
+// ============================================================
+
+function showErrorMessage() {
+  const box = document.getElementById('thank-you-message');
+  const title = document.getElementById('message-title');
+  const body = document.getElementById('message-body');
+  title.textContent = '';
+  body.textContent = 'Please review your submission and ensure all fields are completed.';
+  body.style.color = 'red';
+  box.style.display = 'block';
+}
+
+function showSuccessMessage() {
+  const box = document.getElementById('thank-you-message');
+  const title = document.getElementById('message-title');
+  const body = document.getElementById('message-body');
+  title.textContent = 'Thank you!';
+  body.innerHTML = 'Your form has been submitted successfully.<br><br><button type="button" class="btn-back" onclick="returnToFormSwitcher()">Submit Another Form</button><br><small>You will be redirected to form selection in 5 seconds...</small>';
+  body.style.color = '';
+  box.style.display = 'block';
+  
+  setTimeout(() => {
+    returnToFormSwitcher();
+    box.style.display = 'none';
+  }, 5000);
+}
+
+function returnToFormSwitcher() {
+  location.reload();
+}
+
+function showForm(formType) {
+  console.log('Showing form:', formType);  // Debug to confirm call
+  document.getElementById('thank-you-message').style.display = 'none';
+
+  ['form-bog', 'form-progress'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.add('hidden');
+      el.style.display = 'none';
+    }
+  });
+
+  const target = document.getElementById(`form-${formType}`);
+  if (target) {
+    target.classList.remove('hidden');
+    target.style.display = 'block';
+  }
+
+  setDefaultDate();
+
+  ['btn-bog', 'btn-progress'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      if (id === `btn-${formType}`) {
+        btn.classList.add('active');
+        btn.style.display = 'inline-block';
+      } else {
+        btn.classList.remove('active');
+        btn.style.display = 'none';
+      }
+    }
+  });
+}
+
+// ============================================================
+// POWER AUTOMATE AIRTABLE GATEWAY
+// ============================================================
+
+// IMPORTANT: Paste the Power Automate "When an HTTP request is received"
+// trigger URL here locally. Do not commit or share the signed trigger URL.
+const SOUTH32_GATEWAY_URL = 'https://default32a9c90e5bf140a39c28672bbed3bb.f7.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/02/workflows/34782847ed8c4970a034bd2d1f8fb8c6/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=w8NS84TOHW4FU_UifTQZcLCjHKXkVFQitM6elZ2pliI';
+
+// Airtable's direct attachment upload endpoint accepts at most 5 MB per file.
+const AIRTABLE_DIRECT_UPLOAD_MAX_BYTES = 5 * 1024 * 1024;
+
+function getConfiguredGatewayUrl() {
+  const gatewayUrl = String(SOUTH32_GATEWAY_URL || '').trim();
+  if (!gatewayUrl || gatewayUrl === 'PASTE_POWER_AUTOMATE_TRIGGER_URL_HERE') {
+    throw new Error('Set SOUTH32_GATEWAY_URL to the Power Automate HTTP trigger URL before deployment.');
+  }
+  return gatewayUrl;
+}
+
+async function submitToSouth32Gateway(payload) {
+  const res = await fetch(getConfiguredGatewayUrl(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const responseText = await res.text();
+  let responseBody = null;
+  if (responseText) {
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch (_) {
+      responseBody = null;
+    }
+  }
+
+  if (!res.ok || responseBody?.success === false) {
+    const gatewayMessage = responseBody?.error?.message
+      || responseBody?.error
+      || responseBody?.message
+      || responseText
+      || `Gateway error ${res.status}`;
+    throw new Error(typeof gatewayMessage === 'string' ? gatewayMessage : JSON.stringify(gatewayMessage));
+  }
+
+  return responseBody;
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || '');
+      const commaIndex = result.indexOf(',');
+      if (commaIndex === -1) {
+        reject(new Error(`Could not encode ${file.name}.`));
+        return;
+      }
+      resolve(result.slice(commaIndex + 1));
+    };
+    reader.onerror = () => reject(new Error(`Could not read ${file.name}.`));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function filesToBase64Objects(files, fieldName = 'Photos') {
+  const selectedFiles = Array.from(files || []);
+  const photos = [];
+
+  for (const file of selectedFiles) {
+    if (file.size > AIRTABLE_DIRECT_UPLOAD_MAX_BYTES) {
+      const maximumMb = AIRTABLE_DIRECT_UPLOAD_MAX_BYTES / (1024 * 1024);
+      const actualMb = file.size / (1024 * 1024);
+      throw new Error(`${file.name} is ${actualMb.toFixed(2)} MB. ${fieldName} files must be ${maximumMb} MB or smaller.`);
+    }
+
+    photos.push({
+      filename: file.name,
+      contentType: file.type || 'application/octet-stream',
+      file: await readFileAsBase64(file)
+    });
+  }
+
+  return photos;
+}
+
+// ============================================================
+// CREW MANAGEMENT FUNCTIONS
+// ============================================================
+
+const PERSONNEL_WORKBOOK_PATH = './Personnel.xlsx';
+const PERSONNEL_SHEET_NAME = 'My Groups_ People List (10)';
+const PERSONNEL_COLUMNS = ['First Name', 'Surname', 'Full Name', 'Company'];
+const COMPANY_MAP = Object.freeze({
+  'DMC Civil': 'DMC Civil',
+  'Genus Services': 'Genus Services',
+  'Pulse Infrastructure': 'Pulse Infrastructure'
+});
+
+const sections = [
+  { crew: 'bog-crews-names', lead: 'bog-site-contact', multiCrew: true, companyField: 'bog-company-name' },
+  { lead: 'progress-site-contact', companyField: 'progress-company-name' }
+];
+
+let personnelRecordsPromise;
+
+function normalizePersonnelText(value) {
+  return String(value ?? '').replace(/\s+/g, ' ').trim();
+}
+
+function setPersonnelListMessage(containerEl, message) {
+  if (!containerEl) return;
+  containerEl.replaceChildren();
+  const paragraph = document.createElement('p');
+  paragraph.textContent = message;
+  containerEl.appendChild(paragraph);
+}
+
+async function loadPersonnelRecords() {
+  if (personnelRecordsPromise) return personnelRecordsPromise;
+
+  personnelRecordsPromise = (async () => {
+    if (typeof XLSX === 'undefined') {
+      throw new Error('The Excel reader could not be loaded.');
+    }
+
+    const response = await fetch(PERSONNEL_WORKBOOK_PATH, { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`Personnel.xlsx could not be loaded (HTTP ${response.status}).`);
+    }
+
+    const workbook = XLSX.read(await response.arrayBuffer(), { type: 'array' });
+    const worksheet = workbook.Sheets[PERSONNEL_SHEET_NAME];
+    if (!worksheet) {
+      throw new Error(`Worksheet "${PERSONNEL_SHEET_NAME}" was not found in Personnel.xlsx.`);
+    }
+
+    const worksheetRows = XLSX.utils.sheet_to_json(worksheet, {
+      header: 1,
+      defval: '',
+      raw: false,
+      blankrows: false
+    });
+    const headers = (worksheetRows[0] || []).map(normalizePersonnelText);
+    const missingColumns = PERSONNEL_COLUMNS.filter(column => !headers.includes(column));
+    if (missingColumns.length) {
+      throw new Error(`Personnel.xlsx is missing required column(s): ${missingColumns.join(', ')}.`);
+    }
+
+    return XLSX.utils.sheet_to_json(worksheet, {
+      defval: '',
+      raw: false,
+      blankrows: false
+    }).map(row => ({
+      firstName: normalizePersonnelText(row['First Name']),
+      surname: normalizePersonnelText(row['Surname']),
+      fullName: normalizePersonnelText(row['Full Name']),
+      company: normalizePersonnelText(row['Company'])
+    })).filter(person => person.fullName && person.company);
+  })();
+
+  return personnelRecordsPromise;
+}
+
+async function getPersonnelForCompany(portalCompany) {
+  const selectedCompany = normalizePersonnelText(portalCompany);
+  if (!selectedCompany) return [];
+
+  const workbookCompany = normalizePersonnelText(COMPANY_MAP[selectedCompany] || selectedCompany);
+  const companyKey = workbookCompany.toLocaleLowerCase('en-AU');
+  const personnel = await loadPersonnelRecords();
+  const uniqueNames = new Map();
+
+  personnel.forEach(person => {
+    if (person.company.toLocaleLowerCase('en-AU') !== companyKey) return;
+    const nameKey = person.fullName.toLocaleLowerCase('en-AU');
+    if (!uniqueNames.has(nameKey)) uniqueNames.set(nameKey, person.fullName);
+  });
+
+  return Array.from(uniqueNames.values()).sort((a, b) =>
+    a.localeCompare(b, 'en-AU', { sensitivity: 'base', numeric: true })
+  );
+}
+
+function resetCrewCount() {
+  const peopleCountField = document.getElementById('bog-Number-of-People-at-Location');
+  if (peopleCountField) peopleCountField.value = 0;
+}
+
+function createRadioList(containerEl, hiddenInput, personnelNames) {
+  containerEl.replaceChildren();
+  hiddenInput.value = '';
+
+  if (!Array.isArray(personnelNames) || personnelNames.length === 0) {
+    setPersonnelListMessage(containerEl, 'No personnel found for this company.');
+    return;
+  }
+
+  personnelNames.forEach(name => {
+    const label = document.createElement('label');
+    label.style.display = 'block';
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = `${containerEl.id}-radio`;
+    radio.value = name;
+    radio.addEventListener('change', () => {
+      hiddenInput.value = normalizePersonnelText(radio.value);
+    });
+    label.appendChild(radio);
+    label.appendChild(document.createTextNode(` ${name}`));
+    containerEl.appendChild(label);
+  });
+}
+
+function createCheckboxList(containerEl, hiddenInput, personnelNames) {
+  containerEl.replaceChildren();
+  hiddenInput.value = '';
+  resetCrewCount();
+
+  if (!Array.isArray(personnelNames) || personnelNames.length === 0) {
+    setPersonnelListMessage(containerEl, 'No personnel found for this company.');
+    return;
+  }
+
+  personnelNames.forEach(name => {
+    const label = document.createElement('label');
+    label.style.display = 'block';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = name;
+    checkbox.addEventListener('change', () => {
+      const selected = Array.from(
+        containerEl.querySelectorAll('input[type="checkbox"]:checked')
+      ).map(input => normalizePersonnelText(input.value));
+
+      hiddenInput.value = selected.join(', ');
+      const peopleCountField = document.getElementById('bog-Number-of-People-at-Location');
+      if (peopleCountField) peopleCountField.value = selected.length;
+    });
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(` ${name}`));
+    containerEl.appendChild(label);
+  });
+}
+
+async function refreshPersonnelSection(section) {
+  const companyEl = document.getElementById(section.companyField);
+  const crewEl = section.crew ? document.getElementById(section.crew) : null;
+  const hiddenCrew = section.crew ? document.getElementById(`${section.crew}-hidden`) : null;
+  const leadEl = section.lead ? document.getElementById(section.lead) : null;
+  const hiddenLead = section.lead ? document.getElementById(`${section.lead}-hidden`) : null;
+  const requestId = (section.requestId || 0) + 1;
+  section.requestId = requestId;
+
+  if (hiddenCrew) hiddenCrew.value = '';
+  if (hiddenLead) hiddenLead.value = '';
+  if (section.multiCrew) resetCrewCount();
+
+  const company = normalizePersonnelText(companyEl?.value);
+  if (!company) {
+    setPersonnelListMessage(crewEl, 'Select a company to load personnel.');
+    setPersonnelListMessage(leadEl, 'Select a company to load personnel.');
+    return;
+  }
+
+  setPersonnelListMessage(crewEl, 'Loading personnel...');
+  setPersonnelListMessage(leadEl, 'Loading personnel...');
+
+  try {
+    const personnelNames = await getPersonnelForCompany(company);
+    if (section.requestId !== requestId) return;
+
+    if (crewEl && hiddenCrew && section.multiCrew) {
+      createCheckboxList(crewEl, hiddenCrew, personnelNames);
+    }
+    if (leadEl && hiddenLead) {
+      createRadioList(leadEl, hiddenLead, personnelNames);
+    }
+  } catch (error) {
+    if (section.requestId !== requestId) return;
+    console.error('Failed to load personnel from Personnel.xlsx:', error);
+    const message = 'Personnel could not be loaded. Refresh the page and try again.';
+    setPersonnelListMessage(crewEl, message);
+    setPersonnelListMessage(leadEl, message);
+  }
+}
+
+function initSections() {
+  sections.forEach(section => {
+    const companyEl = document.getElementById(section.companyField);
+    if (!companyEl) return;
+
+    if (companyEl.dataset.personnelHandlerBound !== 'true') {
+      companyEl.addEventListener('change', () => refreshPersonnelSection(section));
+      companyEl.dataset.personnelHandlerBound = 'true';
+    }
+
+    refreshPersonnelSection(section);
+  });
+}
+
+// ============================================================
+// MAIN INITIALIZATION
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', function () {
+  setDefaultDate();
+
+  // Initialize crew sections
+  initSections();
+
+  // BOG form submit
+document.getElementById('bog-form')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  // Keep the displayed count and submitted values in sync with the selected workbook personnel.
+  const crewContainer = document.getElementById('bog-crews-names');
+  const selectedCrewNames = Array.from(
+    crewContainer?.querySelectorAll('input[type="checkbox"]:checked') || []
+  ).map(input => normalizePersonnelText(input.value));
+  const selectedCrewCount = selectedCrewNames.length;
+  const selectedCrewHidden = document.getElementById('bog-crews-names-hidden');
+  const peopleCountField = document.getElementById('bog-Number-of-People-at-Location');
+
+  if (selectedCrewHidden) selectedCrewHidden.value = selectedCrewNames.join(', ');
+  if (peopleCountField) peopleCountField.value = selectedCrewCount;
+  const peopleAtLocation = selectedCrewCount;
+
+  if (selectedCrewCount === 0) {
+    alert('Please select at least one crew member.');
+    crewContainer?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  if (!validateBogForm()) return;
+
+  const btn = this.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  try {
+    const cableField = document.getElementById('bog-route-section');
+    if (cableField && !cableField.value.trim()) {
+      cableField.setCustomValidity("Please enter a Route Section ID.");
+      cableField.reportValidity();
+      cableField.focus();
+      return;
+    }
+    cableField?.setCustomValidity("");
+
+    const crewLeadHidden = document.getElementById('bog-site-contact-hidden');
+    if (crewLeadHidden && !crewLeadHidden.value.trim()) {
+      alert("Please select an Onsite Crew Lead Name.");
+      document.getElementById('bog-site-contact')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const swms = Array.from(document.querySelectorAll('input[name="bog-SWMS[]"]:checked'))
+      .map(el => el.value);
+
+    const startHour = document.getElementById('bog-start-hour')?.value;
+    const startMinutes = document.getElementById('bog-start-minutes')?.value;
+    const startAmPm = document.getElementById('bog-start-ampm')?.value;
+    const formattedStartTime = startHour && startMinutes && startAmPm
+      ? `${startHour}:${startMinutes} ${startAmPm}`
+      : "";
+
+    let data = {
+      "Project": document.getElementById('bog-project')?.value || "South 32 Nullaga",
+      "Form Date": document.getElementById('bog-date')?.value || "",
+      "Route Section": document.getElementById('bog-route-section')?.value?.trim() || "",
+      "Company Name": document.getElementById('bog-company-name')?.value || "",
+      "Discipline": document.getElementById('bog-discipline')?.value || "",
+      "Estimated Start Time": formattedStartTime,
+      "Estimated Hours Worked": Number(document.getElementById('bog-estimated-hours')?.value) || 0,
+      "Onsite Crew Lead Name": document.getElementById('bog-site-contact-hidden')?.value || "",
+      "Number of People at Location": peopleAtLocation,
+      "Selected Crew Members": document.getElementById('bog-crews-names-hidden')?.value || "",
+      "Genus FCM": document.getElementById('bog-Genus-FCM')?.value || "",
+      "SWMS Selected": swms,
+      "JHA Signed & Inducted": document.getElementById('bog-jha-uploaded')?.checked || false,
+      "Excavation Work Today": document.getElementById('bog-excavation-checkbox')?.checked || false,
+      "Additional Comments": document.getElementById('bog-comments')?.value || ""
+    };
+
+    btn.textContent = 'Uploading JHA photos...';
+    const photos = await filesToBase64Objects(
+      document.getElementById('bog-jha-photos')?.files || [],
+      'JHA Photos'
+    );
+
+    btn.textContent = 'Submitting...';
+    await submitToSouth32Gateway({
+      operation: 'BOG_CREATE',
+      fields: data,
+      photos
+    });
+
+    showSuccessMessage();
+
+  } catch (err) {
+    console.error('BOG submission failed:', err);
+    alert('Submission failed: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit BOG';
+  }
+});
+
+// Each checked Progress leaf creates one record. The visible hierarchy is split
+// across Airtable's Activity, Sub-Category and Description fields.
+const PROGRESS_ACTIVITY_CONFIG = [
+  { checkboxId: 'discipline-rrp-progress', quantityId: 'rrp-progress-qty', photosId: 'rrp-progress-photos', activity: 'Rod, Rope & Prove', subCategory: '', description: '' },
+  { checkboxId: 'discipline-civil-hdd-otr-progress', quantityId: 'civil-hdd-otr-progress-qty', photosId: 'civil-hdd-otr-progress-photos', activity: 'Civil Works', subCategory: 'Horizontal Directional Drilling', description: 'OTR' },
+  { checkboxId: 'discipline-civil-hdd-rock-progress', quantityId: 'civil-hdd-rock-progress-qty', photosId: 'civil-hdd-rock-progress-photos', activity: 'Civil Works', subCategory: 'Horizontal Directional Drilling', description: 'Rock' },
+  { checkboxId: 'discipline-civil-trenching-excavator-otr-progress', quantityId: 'civil-trenching-excavator-otr-progress-qty', photosId: 'civil-trenching-excavator-otr-progress-photos', activity: 'Civil Works', subCategory: 'Trenching - Excavator', description: 'Excavate 500mm wide trench 0-2m depth (Conventional) OTR' },
+  { checkboxId: 'discipline-civil-trenching-excavator-rock-progress', quantityId: 'civil-trenching-excavator-rock-progress-qty', photosId: 'civil-trenching-excavator-rock-progress-photos', activity: 'Civil Works', subCategory: 'Trenching - Excavator', description: 'Excavate 500mm wide trench 0-2m depth (Conventional) – ROCK – Needs Approval from GENUS' },
+  { checkboxId: 'discipline-civil-trenching-excavator-backfill-progress', quantityId: 'civil-trenching-excavator-backfill-progress-qty', photosId: 'civil-trenching-excavator-backfill-progress-photos', activity: 'Civil Works', subCategory: 'Trenching - Excavator', description: 'Conventional - Backfill and compaction using mixed spoil that requires local filtering and screening by the operator to achieve compliant material' },
+  { checkboxId: 'discipline-civil-trenching-tesmec-otr-progress', quantityId: 'civil-trenching-tesmec-otr-progress-qty', photosId: 'civil-trenching-tesmec-otr-progress-photos', activity: 'Civil Works', subCategory: 'Trenching - Tesmec', description: 'Excavate 500mm wide trench 0-2m depth (Tesmec) - OTR' },
+  { checkboxId: 'discipline-civil-trenching-tesmec-rock-progress', quantityId: 'civil-trenching-tesmec-rock-progress-qty', photosId: 'civil-trenching-tesmec-rock-progress-photos', activity: 'Civil Works', subCategory: 'Trenching - Tesmec', description: 'Excavate 500mm wide trench 0-2m depth (Tesmec) – ROCK – Needs Approval from GENUS' },
+  { checkboxId: 'discipline-civil-trenching-tesmec-backfill-progress', quantityId: 'civil-trenching-tesmec-backfill-progress-qty', photosId: 'civil-trenching-tesmec-backfill-progress-photos', activity: 'Civil Works', subCategory: 'Trenching - Tesmec', description: 'Tesmec - Backfill and compaction using well-graded spoil (either imported by S32 or created via the use of the TRS1300 if ground conditions are favourable) without the need for local filtering or screening by the operator' },
+  { checkboxId: 'discipline-conduits-100mm-upvc-progress', quantityId: 'conduits-100mm-upvc-progress-qty', photosId: 'conduits-100mm-upvc-progress-photos', activity: 'Conduits', subCategory: 'Supply & install of 100mm uPVC conduit; inclusive of all fittings and other required installation materials, such as danger tape, etc.', description: '' },
+  { checkboxId: 'discipline-pit-installation-plastic-5-progress', quantityId: 'pit-installation-plastic-5-progress-qty', photosId: 'pit-installation-plastic-5-progress-photos', activity: 'Pit Installation', subCategory: 'Plastic 5 cable pits with electrical lid (D-445-X-20120)', description: '' },
+  { checkboxId: 'discipline-pit-installation-concrete-universal-8-progress', quantityId: 'pit-installation-concrete-universal-8-progress-qty', photosId: 'pit-installation-concrete-universal-8-progress-photos', activity: 'Pit Installation', subCategory: 'Supply & install CONCRETE UNIVERSAL 8 CLASS B pit', description: '' },
+  { checkboxId: 'discipline-pit-installation-type-8-progress', quantityId: 'pit-installation-type-8-progress-qty', photosId: 'pit-installation-type-8-progress-photos', activity: 'Pit Installation', subCategory: 'Supply & install Type 8 Class D underground pit (D-445-X-20117)', description: '' },
+  { checkboxId: 'discipline-marker-posts-mounted-cable-marker-progress', quantityId: 'marker-posts-mounted-cable-marker-progress-qty', photosId: 'marker-posts-mounted-cable-marker-progress-photos', activity: 'Marker Posts', subCategory: 'Post mounted cable marker (D-445-X-20117)', description: '' },
+  { checkboxId: 'discipline-fibre-hauling-12core-foc-progress', quantityId: 'fibre-hauling-12core-foc-progress-qty', photosId: 'fibre-hauling-12core-foc-progress-photos', activity: 'Fibre Hauling', subCategory: 'Supply & install 12core FOC', description: '' },
+  { checkboxId: 'discipline-fibre-hauling-72core-new-conduits-progress', quantityId: 'fibre-hauling-72core-new-conduits-progress-qty', photosId: 'fibre-hauling-72core-new-conduits-progress-photos', activity: 'Fibre Hauling', subCategory: 'Supply & install 72core FOC in new conduits', description: '' },
+  { checkboxId: 'discipline-fibre-hauling-72core-existing-conduits-progress', quantityId: 'fibre-hauling-72core-existing-conduits-progress-qty', photosId: 'fibre-hauling-72core-existing-conduits-progress-photos', activity: 'Fibre Hauling', subCategory: 'Supply & install 72core FOC in existing conduits', description: '' },
+  { checkboxId: 'discipline-fibre-hauling-existing-pits-material-progress', quantityId: 'fibre-hauling-existing-pits-material-progress-qty', photosId: 'fibre-hauling-existing-pits-material-progress-photos', activity: 'Fibre Hauling', subCategory: 'Supply and install all required material through existing on-route concrete cable pits (D-445-X-20097)', description: '' },
+  { checkboxId: 'discipline-fibre-optics-12core-joints-progress', quantityId: 'fibre-optics-12core-joints-progress-qty', photosId: 'fibre-optics-12core-joints-progress-photos', activity: 'Fibre Optics', subCategory: '12Core cable joints (Allowance)', description: '' },
+  { checkboxId: 'discipline-fibre-optics-12core-terminations-progress', quantityId: 'fibre-optics-12core-terminations-progress-qty', photosId: 'fibre-optics-12core-terminations-progress-photos', activity: 'Fibre Optics', subCategory: '12Core cable terminations (Allowance)', description: '' },
+  { checkboxId: 'discipline-fibre-optics-72core-joints-progress', quantityId: 'fibre-optics-72core-joints-progress-qty', photosId: 'fibre-optics-72core-joints-progress-photos', activity: 'Fibre Optics', subCategory: '72Core cable joints (Allowance)', description: '' },
+  { checkboxId: 'discipline-fibre-optics-72core-terminations-progress', quantityId: 'fibre-optics-72core-terminations-progress-qty', photosId: 'fibre-optics-72core-terminations-progress-photos', activity: 'Fibre Optics', subCategory: '72Core cable terminations (Allowance)', description: '' },
+  { checkboxId: 'discipline-testing-commissioning-otdr-progress', quantityId: 'testing-commissioning-otdr-progress-qty', photosId: 'testing-commissioning-otdr-progress-photos', activity: 'Testing & Commissioning', subCategory: 'OTDR Testing', description: '' },
+  { checkboxId: 'discipline-testing-commissioning-insertion-loss-progress', quantityId: 'testing-commissioning-insertion-loss-progress-qty', photosId: 'testing-commissioning-insertion-loss-progress-photos', activity: 'Testing & Commissioning', subCategory: 'Insertion loss testing', description: '' }
+];
+
+// Progress form submit
+document.getElementById('progress-form')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!validateProgressForm()) return;
+
+  const btn = this.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  try {
+    // Common data for all records
+    const commonData = {
+      "Project": document.getElementById('progress-project')?.value || "South 32 Nullaga",
+      "Form Date": document.getElementById('progress-date')?.value || "",
+      "Company Name": document.getElementById('progress-company-name')?.value || "",
+      "Onsite Crew Lead Name": document.getElementById('progress-site-contact-hidden')?.value || "",
+      "Route Section": document.getElementById('progress-route-section')?.value?.trim() || "",
+      "Start Marker": document.getElementById('progress-start-marker')?.value?.trim() || "",
+      "End Marker": document.getElementById('progress-end-marker')?.value?.trim() || "",
+      "Additional Comments": document.getElementById('progress-comments')?.value || ""
+    };
+
+    const selectedActivities = PROGRESS_ACTIVITY_CONFIG.filter(config =>
+      document.getElementById(config.checkboxId)?.checked
+    );
+
+    for (let i = 0; i < selectedActivities.length; i++) {
+      const config = selectedActivities[i];
+      btn.textContent = `Uploading activity photos (${i + 1}/${selectedActivities.length})...`;
+
+      const photos = await filesToBase64Objects(
+        document.getElementById(config.photosId)?.files || [],
+        `${config.description || config.subCategory || config.activity} Photos`
+      );
+
+      const fields = {
+        ...commonData,
+        "Activity": config.activity,
+        "Sub-Category": config.subCategory,
+        "Description": config.description,
+        "Quantity/Metres": Number(document.getElementById(config.quantityId)?.value) || 0
+      };
+
+      btn.textContent = `Submitting records (${i + 1}/${selectedActivities.length})...`;
+      await submitToSouth32Gateway({
+        operation: 'PROGRESS_CREATE',
+        fields,
+        photos
+      });
+    }
+
+    showSuccessMessage();
+
+  } catch (err) {
+    console.error('Progress submission failed:', err);
+    alert('Submission failed: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Progress Register';
+  }
+});
+});
+</script>
+</body>
+</html>
